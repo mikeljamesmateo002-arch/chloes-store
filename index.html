@@ -2209,33 +2209,73 @@ function getCompletedSales(){
 
 function calculateSaleProfit(sale){
 
+    // Start with the original recorded sale profit.
+    let profit;
+
     if(sale.net_profit !== undefined &&
        sale.net_profit !== null){
 
-        return Number(sale.net_profit || 0);
+        profit = Number(sale.net_profit || 0);
+
+    }else{
+
+        let cost = 0;
+
+        (sale.items || []).forEach(item=>{
+
+            cost +=
+                Number(item.cost_price || 0) *
+                Number(item.quantity || 0);
+        });
+
+        const shipping =
+            sale.shipping_payer === "Store"
+                ? Number(sale.shipping_fee || 0)
+                : 0;
+
+        profit =
+            Number(sale.subtotal || 0)
+            - Number(sale.discount || 0)
+            - cost
+            - shipping;
     }
 
 
-    let cost = 0;
+    /*
+     * Returns must reduce profit dynamically.
+     *
+     * Previously the dashboard/report used sale.net_profit directly,
+     * so returning an item changed its status/stock but did not remove
+     * that item's profit from Net Profit.
+     *
+     * Example:
+     * Brown Bag profit = 100
+     * Vape x2 profit = 100
+     * Return 1 Vape = -50
+     * Actual Net Profit = 150
+     */
+    const returnedProfit =
+        returnsData
+            .filter(r=>String(r.sale_id) === String(sale.id))
+            .reduce((sum,record)=>{
 
-    (sale.items || []).forEach(item=>{
+                return sum +
+                    (record.items || []).reduce((itemSum,item)=>{
 
-        cost +=
-            Number(item.cost_price || 0) *
-            Number(item.quantity || 0);
-    });
+                        const itemProfit =
+                            Number(item.selling_price || 0) -
+                            Number(item.cost_price || 0);
+
+                        return itemSum +
+                            (itemProfit *
+                             Number(item.quantity || 0));
+
+                    },0);
+
+            },0);
 
 
-    const shipping =
-        sale.shipping_payer === "Store"
-            ? Number(sale.shipping_fee || 0)
-            : 0;
-
-
-    return Number(sale.subtotal || 0)
-        - Number(sale.discount || 0)
-        - cost
-        - shipping;
+    return profit - returnedProfit;
 }
 
 
