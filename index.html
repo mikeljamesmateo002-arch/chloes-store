@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chloe's Store - Fashion Sales ERP V3.1</title>
-<meta name="app-version" content="3.1.0">
+<title>Chloe's Store - Fashion Sales ERP V3.2</title>
+<meta name="app-version" content="3.2.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
@@ -34,6 +34,31 @@ input:focus,select:focus,textarea:focus{
 .login-bg{
     background:linear-gradient(135deg,#eff6ff 0%,#f8fafc 50%,#eef2ff 100%);
 }
+.mobile-menu-btn{display:none}
+.mobile-overlay{display:none}
+@media (max-width:767px){
+    .sidebar{width:280px;transform:translateX(-100%);transition:transform .25s ease;box-shadow:0 10px 30px rgba(15,23,42,.15)}
+    .sidebar.mobile-open{transform:translateX(0)}
+    .main-content{margin-left:0}
+    .mobile-menu-btn{display:inline-flex}
+    .mobile-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:35}
+    .mobile-overlay.show{display:block}
+    .app-header{height:auto!important;min-height:72px;padding:12px 14px!important;gap:10px}
+    .app-header h2{font-size:16px;line-height:1.25}
+    .app-header .header-add-product{display:none}
+    .page-content{padding:14px!important}
+    .sticky{position:static!important}
+    .inventory-toolbar{flex-direction:column;align-items:stretch!important}
+    .inventory-toolbar>div{width:100%!important}
+    .inventory-actions{display:grid!important;grid-template-columns:1fr 1fr}
+    .inventory-actions button{width:100%}
+    .modal-bg{padding:10px!important}
+    .modal-bg>div{max-height:94vh;overflow-y:auto}
+    #batchProductModal>div{max-width:100%;overflow:hidden}
+    #batchProductModal .p-5{padding:14px}
+    #batchProductModal table{min-width:760px}
+}
+@media (min-width:768px){.page-content{padding:2rem}}
 </style>
 </head>
 
@@ -75,7 +100,7 @@ input:focus,select:focus,textarea:focus{
             </h1>
 
             <p class="text-slate-500 mt-1">
-                Fashion Sales ERP <span class="font-semibold">V3.1.0</span>
+                Fashion Sales ERP <span class="font-semibold">V3.2.0</span>
             </p>
         </div>
 
@@ -152,6 +177,8 @@ input:focus,select:focus,textarea:focus{
      MAIN APP
 ========================================================= -->
 <div id="mainApp" class="hidden">
+
+    <div id="mobileOverlay" class="mobile-overlay" onclick="closeMobileMenu()"></div>
 
     <!-- SIDEBAR -->
     <aside class="sidebar fixed left-0 top-0 bottom-0 bg-white border-r border-slate-200 z-40">
@@ -251,7 +278,11 @@ input:focus,select:focus,textarea:focus{
     <main class="main-content min-h-screen">
 
         <!-- HEADER -->
-        <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-30">
+        <header class="app-header h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMobileMenu()" class="mobile-menu-btn w-10 h-10 items-center justify-center rounded-lg border border-slate-200 text-slate-600" aria-label="Open menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
 
             <div>
                 <h2 id="pageTitle" class="text-xl font-bold">Dashboard & Analytics</h2>
@@ -263,11 +294,12 @@ input:focus,select:focus,textarea:focus{
                 <i class="fa-solid fa-plus mr-2"></i>
                 Add Product
             </button>
+            </div>
 
         </header>
 
 
-        <div class="p-8">
+        <div class="page-content p-8">
 
             <!-- =================================================
                  DASHBOARD
@@ -601,8 +633,9 @@ input:focus,select:focus,textarea:focus{
 
                 <div class="card overflow-hidden">
 
-                    <div class="p-5 border-b border-slate-200 flex justify-between items-center">
+                    <div class="p-5 border-b border-slate-200">
 
+                        <div class="inventory-toolbar flex justify-between items-center gap-4">
                         <div>
                             <h3 class="font-bold">Inventory & Stock</h3>
                             <p class="text-xs text-slate-400">
@@ -610,7 +643,7 @@ input:focus,select:focus,textarea:focus{
                             </p>
                         </div>
 
-                        <div class="flex flex-wrap gap-2">
+                        <div class="inventory-actions flex flex-wrap gap-2">
                         <button onclick="openProductModal()"
                                 class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
                             <i class="fa-solid fa-plus mr-1"></i>
@@ -622,7 +655,24 @@ input:focus,select:focus,textarea:focus{
                             Batch Add
                         </button>
                     </div>
+                    </div>
 
+                    <div class="p-4 border-b border-slate-200 bg-slate-50">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div class="relative">
+                                <i class="fa-solid fa-search absolute left-3 top-3.5 text-slate-400"></i>
+                                <input id="inventorySearch" oninput="renderInventoryTable()" placeholder="Search product or category..." class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg bg-white">
+                            </div>
+                            <select id="inventoryStockFilter" onchange="renderInventoryTable()" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg bg-white">
+                                <option value="">All Stock</option>
+                                <option value="low">Low Stock (1-5)</option>
+                                <option value="out">Out of Stock</option>
+                                <option value="healthy">Healthy Stock</option>
+                            </select>
+                            <select id="inventoryCategoryFilter" onchange="renderInventoryTable()" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg bg-white">
+                                <option value="">All Categories</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="overflow-x-auto">
@@ -889,6 +939,41 @@ input:focus,select:focus,textarea:focus{
 
         </div>
 
+    </div>
+</div>
+
+
+<!-- =========================================================
+     STOCK ADJUSTMENT MODAL
+========================================================= -->
+<div id="stockAdjustmentModal" class="hidden fixed inset-0 z-[114] modal-bg flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+            <div><h3 class="font-bold">Adjust Stock</h3><p id="adjustmentProductLabel" class="text-xs text-slate-400 mt-1"></p></div>
+            <button onclick="closeStockAdjustmentModal()" class="text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <div class="p-5 space-y-4">
+            <input type="hidden" id="adjustmentProductId">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="rounded-lg bg-slate-50 p-3"><div class="text-xs text-slate-400">Current Stock</div><div id="adjustmentCurrentStock" class="text-xl font-extrabold mt-1">0</div></div>
+                <div><label class="text-xs font-semibold text-slate-500">Adjustment</label><input id="adjustmentQuantity" type="number" step="1" class="w-full mt-1 px-3 py-2.5 border border-slate-300 rounded-lg" placeholder="e.g. 10 or -2"><div class="text-[11px] text-slate-400 mt-1">Use + to add, − to remove.</div></div>
+            </div>
+            <div><label class="text-sm font-semibold">Reason</label><select id="adjustmentReason" class="w-full mt-1 px-3 py-2.5 border border-slate-300 rounded-lg"><option value="RESTOCK">Restock</option><option value="ADJUSTMENT">Manual Adjustment</option><option value="DAMAGE">Damage</option><option value="LOST">Lost</option></select></div>
+            <div><label class="text-sm font-semibold">Note</label><input id="adjustmentNote" class="w-full mt-1 px-3 py-2.5 border border-slate-300 rounded-lg" placeholder="Optional note"></div>
+            <button id="saveAdjustmentBtn" onclick="saveStockAdjustment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-bold"><i class="fa-solid fa-check mr-2"></i>Save Adjustment</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- =========================================================
+     DIGITAL RECEIPT MODAL
+========================================================= -->
+<div id="receiptModal" class="hidden fixed inset-0 z-[116] modal-bg flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] overflow-y-auto">
+        <div class="p-5 border-b border-slate-200 flex items-center justify-between"><div><h3 class="font-bold">Digital Receipt</h3><p class="text-xs text-slate-400">Soft copy receipt for customer sharing</p></div><button onclick="closeReceiptModal()" class="text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+        <div id="receiptContent" class="p-5"></div>
+        <div class="p-5 pt-0 grid grid-cols-2 gap-2"><button onclick="copyReceipt()" class="border border-slate-300 hover:bg-slate-50 py-2.5 rounded-lg font-semibold"><i class="fa-solid fa-copy mr-1"></i>Copy</button><button onclick="shareReceipt()" class="bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold"><i class="fa-solid fa-share-nodes mr-1"></i>Share</button></div>
     </div>
 </div>
 
@@ -2003,6 +2088,7 @@ async function syncAll(){
 // ============================================================
 
 function switchTab(tab){
+    closeMobileMenu();
 
     const tabs = [
         "dashboard",
@@ -3303,9 +3389,7 @@ async function submitOrder(){
 
         renderAll();
 
-        alert(
-            `Order ${sale.id} completed successfully.`
-        );
+        openReceiptModal(sale);
 
     }catch(error){
 
@@ -3370,8 +3454,39 @@ function renderInventoryTable(){
     }
 
 
+    const search = String(document.getElementById("inventorySearch")?.value || "").trim().toLowerCase();
+    const stockFilter = String(document.getElementById("inventoryStockFilter")?.value || "");
+    const categoryFilter = String(document.getElementById("inventoryCategoryFilter")?.value || "");
+
+    const categories = [...new Set(inventory.map(p=>String(p.category || "").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    const categorySelect = document.getElementById("inventoryCategoryFilter");
+    if(categorySelect){
+        const current = categorySelect.value;
+        categorySelect.innerHTML = '<option value="">All Categories</option>' +
+            categories.map(cat=>'<option value="'+escapeHtml(cat)+'">'+escapeHtml(cat)+'</option>').join("");
+        categorySelect.value = categories.includes(current) ? current : "";
+    }
+
+    const filteredInventory = inventory.filter(product=>{
+        const name = String(product.name || "").toLowerCase();
+        const category = String(product.category || "").toLowerCase();
+        const stock = Number(product.stock || 0);
+        const matchesSearch = !search || name.includes(search) || category.includes(search) || String(product.id || "").toLowerCase().includes(search);
+        const matchesCategory = !categoryFilter || String(product.category || "") === categoryFilter;
+        const matchesStock = !stockFilter ||
+            (stockFilter === "low" && stock > 0 && stock <= 5) ||
+            (stockFilter === "out" && stock <= 0) ||
+            (stockFilter === "healthy" && stock > 5);
+        return matchesSearch && matchesCategory && matchesStock;
+    });
+
+    if(!filteredInventory.length){
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-10 text-slate-400">No matching products.</td></tr>';
+        return;
+    }
+
     tbody.innerHTML =
-        inventory.map(product=>{
+        filteredInventory.map(product=>{
 
             const stock =
                 Number(product.stock || 0);
@@ -3409,6 +3524,13 @@ function renderInventoryTable(){
                     </td>
 
                     <td class="px-5 py-4 text-right">
+
+                        <button
+                            onclick="openStockAdjustmentModal('${product.id}')"
+                            class="text-emerald-600 hover:text-emerald-800 mr-3"
+                            title="Adjust Stock">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </button>
 
                         <button
                             onclick="editProduct('${product.id}')"
@@ -3568,6 +3690,84 @@ function viewCustomerHistory(id){
     document.getElementById('customerHistoryModal').classList.remove('hidden');
 }
 function closeCustomerHistory(){document.getElementById('customerHistoryModal').classList.add('hidden');}
+
+
+// ============================================================
+// STOCK ADJUSTMENT
+// ============================================================
+
+function openStockAdjustmentModal(id){
+    const product=inventory.find(p=>String(p.id)===String(id)); if(!product)return;
+    document.getElementById("adjustmentProductId").value=product.id;
+    document.getElementById("adjustmentProductLabel").textContent=product.name||"Product";
+    document.getElementById("adjustmentCurrentStock").textContent=Number(product.stock||0);
+    document.getElementById("adjustmentQuantity").value="";
+    document.getElementById("adjustmentReason").value="RESTOCK";
+    document.getElementById("adjustmentNote").value="";
+    document.getElementById("stockAdjustmentModal").classList.remove("hidden");
+}
+function closeStockAdjustmentModal(){document.getElementById("stockAdjustmentModal").classList.add("hidden");}
+async function saveStockAdjustment(){
+    if(!currentUser)return;
+    const id=document.getElementById("adjustmentProductId").value;
+    const product=inventory.find(p=>String(p.id)===String(id)); if(!product)return;
+    const delta=Number(document.getElementById("adjustmentQuantity").value);
+    const reason=document.getElementById("adjustmentReason").value;
+    const note=document.getElementById("adjustmentNote").value.trim();
+    if(!Number.isFinite(delta)||delta===0){alert("Enter a non-zero stock adjustment.");return;}
+    const oldStock=Number(product.stock||0), newStock=Math.max(0,oldStock+delta);
+    if(newStock===oldStock){alert("Stock cannot go below zero.");return;}
+    const now=new Date().toISOString();
+    const movement={id:makeId("MOV"),owner_id:currentUser.id,product_id:product.id,product_name:product.name,change_type:reason,quantity_changed:newStock-oldStock,new_stock:newStock,note:note||reason,date:now};
+    product.stock=newStock; product.updated_at=now; stockMovements.push(movement);
+    saveLocalState(); renderAll(); closeStockAdjustmentModal();
+    const btn=document.getElementById("saveAdjustmentBtn");
+    if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i>Saving...';}
+    try{
+        setSyncStatus("Saving Adjustment...","loading");
+        const invResult=await syncTable("inventory",inventory); if(!invResult)throw new Error("Inventory sync failed.");
+        const movementResult=await supabaseClient.from("stock_movements").insert(movement); if(movementResult.error)throw movementResult.error;
+        setSyncStatus("Cloud Synced","success");
+    }catch(error){
+        product.stock=oldStock; product.updated_at=now; stockMovements=stockMovements.filter(m=>String(m.id)!==String(movement.id));
+        saveLocalState(); renderAll(); setSyncStatus("Sync Error","error");
+        alert("Stock was restored locally because cloud sync failed.\n\n"+error.message);
+    }finally{
+        if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-check mr-2"></i>Save Adjustment';}
+    }
+}
+
+
+// ============================================================
+// DIGITAL RECEIPT
+// ============================================================
+
+let activeReceipt=null;
+function openReceiptModal(sale){
+    activeReceipt=sale;
+    const items=(sale.items||[]).map(function(item){
+        return '<div class="flex justify-between gap-3 py-2 border-b border-slate-100"><div class="min-w-0"><div class="font-semibold text-sm">'+escapeHtml(item.name)+'</div><div class="text-xs text-slate-400">'+item.quantity+' × '+money(item.selling_price)+'</div></div><div class="font-semibold text-sm whitespace-nowrap">'+money(Number(item.quantity||0)*Number(item.selling_price||0))+'</div></div>';
+    }).join("");
+    document.getElementById("receiptContent").innerHTML='<div class="bg-white"><div class="text-center pb-4 border-b border-slate-200"><div class="font-extrabold text-lg">Chloe\'s Store</div><div class="text-xs text-slate-400 mt-1">Digital Sales Receipt</div></div><div class="py-4 space-y-1 text-xs"><div class="flex justify-between"><span class="text-slate-400">Order</span><span class="font-semibold">'+escapeHtml(sale.id)+'</span></div><div class="flex justify-between"><span class="text-slate-400">Date</span><span>'+ (sale.date?new Date(sale.date).toLocaleString("en-PH"):"-") +'</span></div><div class="flex justify-between"><span class="text-slate-400">Customer</span><span>'+escapeHtml(sale.customer_name||"Walk-in Customer")+'</span></div><div class="flex justify-between"><span class="text-slate-400">Channel</span><span>'+escapeHtml(sale.channel||"-")+'</span></div></div>'+items+'<div class="pt-4 mt-2 border-t border-slate-200 space-y-2"><div class="flex justify-between text-sm"><span>Subtotal</span><span>'+money(sale.subtotal)+'</span></div><div class="flex justify-between text-sm"><span>Discount</span><span>-'+money(sale.discount)+'</span></div><div class="flex justify-between text-sm"><span>Shipping</span><span>'+money(sale.shipping)+'</span></div><div class="flex justify-between text-lg font-extrabold"><span>Total</span><span>'+money(sale.total)+'</span></div><div class="flex justify-between text-sm"><span>Payment</span><span>'+money(sale.payment_amount||sale.total)+'</span></div><div class="flex justify-between text-sm"><span>Change</span><span>'+money(sale.change_amount||0)+'</span></div></div></div>';
+    document.getElementById("receiptModal").classList.remove("hidden");
+}
+function closeReceiptModal(){document.getElementById("receiptModal").classList.add("hidden");}
+function getReceiptText(){
+    if(!activeReceipt)return "";
+    const s=activeReceipt, lines=["CHLOE'S STORE","Digital Sales Receipt","Order: "+s.id,"Date: "+(s.date?new Date(s.date).toLocaleString("en-PH"):"-"),"Customer: "+(s.customer_name||"Walk-in Customer"),"Channel: "+(s.channel||"-"),""];
+    (s.items||[]).forEach(function(i){lines.push(i.name+" x"+i.quantity+" = "+money(Number(i.quantity||0)*Number(i.selling_price||0)));});
+    lines.push("","Subtotal: "+money(s.subtotal),"Discount: -"+money(s.discount),"Shipping: "+money(s.shipping),"TOTAL: "+money(s.total),"Payment: "+money(s.payment_amount||s.total),"Change: "+money(s.change_amount||0));
+    return lines.join("\n");
+}
+async function copyReceipt(){
+    const text=getReceiptText(); if(!text)return;
+    try{await navigator.clipboard.writeText(text);alert("Receipt copied to clipboard.");}catch(e){alert("Copy is not available on this device.");}
+}
+async function shareReceipt(){
+    const text=getReceiptText(); if(!text)return;
+    if(navigator.share){try{await navigator.share({title:"Chloe's Store Receipt",text:text});}catch(e){}}
+    else{await copyReceipt();}
+}
 
 
 // ============================================================
@@ -4704,6 +4904,20 @@ window.addEventListener("error", event=>{
 window.addEventListener("unhandledrejection", event=>{
     console.error("Unhandled promise rejection:", event.reason);
 });
+
+
+// ============================================================
+// MOBILE NAVIGATION
+// ============================================================
+
+function toggleMobileMenu(){
+    document.querySelector(".sidebar")?.classList.toggle("mobile-open");
+    document.getElementById("mobileOverlay")?.classList.toggle("show");
+}
+function closeMobileMenu(){
+    document.querySelector(".sidebar")?.classList.remove("mobile-open");
+    document.getElementById("mobileOverlay")?.classList.remove("show");
+}
 
 
 // ============================================================
