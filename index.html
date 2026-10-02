@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chloe's Store - Fashion Sales ERP V3.0</title>
-<meta name="app-version" content="3.0.0">
+<title>Chloe's Store - Fashion Sales ERP V3.1</title>
+<meta name="app-version" content="3.1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
@@ -75,7 +75,7 @@ input:focus,select:focus,textarea:focus{
             </h1>
 
             <p class="text-slate-500 mt-1">
-                Fashion Sales ERP <span class="font-semibold">V3.0.0</span>
+                Fashion Sales ERP <span class="font-semibold">V3.1.0</span>
             </p>
         </div>
 
@@ -610,11 +610,18 @@ input:focus,select:focus,textarea:focus{
                             </p>
                         </div>
 
+                        <div class="flex flex-wrap gap-2">
                         <button onclick="openProductModal()"
                                 class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
                             <i class="fa-solid fa-plus mr-1"></i>
                             Add Product
                         </button>
+                        <button onclick="openBatchProductModal()"
+                                class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                            <i class="fa-solid fa-layer-group mr-1"></i>
+                            Batch Add
+                        </button>
+                    </div>
 
                     </div>
 
@@ -965,6 +972,58 @@ input:focus,select:focus,textarea:focus{
 
         </div>
 
+    </div>
+</div>
+
+
+<!-- =========================================================
+     BATCH PRODUCT MODAL
+========================================================= -->
+<div id="batchProductModal"
+     class="hidden fixed inset-0 z-[112] modal-bg flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[94vh] overflow-hidden">
+        <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-bold">Batch Add Products</h3>
+                <p class="text-xs text-slate-400 mt-1">Add multiple products at once. Existing products will not be changed.</p>
+            </div>
+            <button onclick="closeBatchProductModal()" class="text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <div class="p-5">
+            <div class="rounded-lg bg-blue-50 text-blue-700 text-xs p-3 mb-4">
+                <i class="fa-solid fa-circle-info mr-1"></i>
+                Product Name is required. Stock, Cost Price, and Selling Price can be zero.
+            </div>
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                <table class="w-full text-sm min-w-[850px]">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="text-left px-3 py-3">Product Name *</th>
+                            <th class="text-left px-3 py-3">Category</th>
+                            <th class="text-right px-3 py-3">Stock</th>
+                            <th class="text-right px-3 py-3">Cost Price</th>
+                            <th class="text-right px-3 py-3">Selling Price</th>
+                            <th class="text-center px-3 py-3">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="batchProductRows"></tbody>
+                </table>
+            </div>
+            <div class="flex flex-wrap justify-between items-center gap-3 mt-4">
+                <button onclick="addBatchProductRow()" class="border border-slate-300 hover:bg-slate-50 px-4 py-2.5 rounded-lg font-semibold text-sm">
+                    <i class="fa-solid fa-plus mr-1"></i>Add Row
+                </button>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="clearBatchProductRows()" class="border border-slate-300 hover:bg-slate-50 px-4 py-2.5 rounded-lg font-semibold text-sm">Clear</button>
+                    <button onclick="closeBatchProductModal()" class="border border-slate-300 hover:bg-slate-50 px-4 py-2.5 rounded-lg font-semibold text-sm">Cancel</button>
+                    <button id="saveBatchProductsBtn" onclick="saveBatchProducts()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm">
+                        <i class="fa-solid fa-cloud-arrow-up mr-1"></i>Save All Products
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -3764,6 +3823,160 @@ async function saveProduct(){
             "Product saved locally but cloud sync failed:\n" +
             error.message
         );
+    }
+}
+
+
+function openBatchProductModal(){
+    const modal = document.getElementById("batchProductModal");
+    if(!modal) return;
+    clearBatchProductRows();
+    addBatchProductRow();
+    addBatchProductRow();
+    addBatchProductRow();
+    modal.classList.remove("hidden");
+}
+
+function closeBatchProductModal(){
+    const modal = document.getElementById("batchProductModal");
+    if(modal) modal.classList.add("hidden");
+}
+
+function addBatchProductRow(values={}){
+    const tbody = document.getElementById("batchProductRows");
+    if(!tbody) return;
+
+    const row = document.createElement("tr");
+    row.className = "border-t border-slate-100 batch-product-row";
+
+    const safeName = escapeHtml(values.name || "");
+    const safeCategory = escapeHtml(values.category || "");
+    const stock = values.stock ?? 0;
+    const cost = values.cost ?? 0;
+    const selling = values.selling ?? 0;
+
+    row.innerHTML =
+        '<td class="px-2 py-2"><input data-field="name" value="' + safeName + '" placeholder="Product name" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg"></td>' +
+        '<td class="px-2 py-2"><input data-field="category" value="' + safeCategory + '" placeholder="e.g. Dresses" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg"></td>' +
+        '<td class="px-2 py-2"><input data-field="stock" type="number" min="0" step="1" value="' + stock + '" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-right"></td>' +
+        '<td class="px-2 py-2"><input data-field="cost" type="number" min="0" step="0.01" value="' + cost + '" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-right"></td>' +
+        '<td class="px-2 py-2"><input data-field="selling" type="number" min="0" step="0.01" value="' + selling + '" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-right"></td>' +
+        '<td class="px-2 py-2 text-center"><button type="button" onclick="removeBatchProductRow(this)" class="text-red-500 hover:text-red-700 p-2" title="Remove row"><i class="fa-solid fa-trash"></i></button></td>';
+
+    tbody.appendChild(row);
+}
+
+function removeBatchProductRow(button){
+    const row = button && button.closest(".batch-product-row");
+    if(row) row.remove();
+
+    const tbody = document.getElementById("batchProductRows");
+    if(tbody && !tbody.children.length) addBatchProductRow();
+}
+
+function clearBatchProductRows(){
+    const tbody = document.getElementById("batchProductRows");
+    if(tbody) tbody.innerHTML = "";
+}
+
+async function saveBatchProducts(){
+    if(!currentUser){
+        alert("Please sign in.");
+        return;
+    }
+
+    const rows = Array.from(document.querySelectorAll("#batchProductRows .batch-product-row"));
+    const productsToAdd = [];
+    const errors = [];
+
+    rows.forEach((row,index)=>{
+        const name = row.querySelector('[data-field="name"]')?.value.trim() || "";
+        const category = row.querySelector('[data-field="category"]')?.value.trim() || "";
+        const stock = Math.max(0, Number(row.querySelector('[data-field="stock"]')?.value || 0));
+        const cost = Math.max(0, Number(row.querySelector('[data-field="cost"]')?.value || 0));
+        const selling = Math.max(0, Number(row.querySelector('[data-field="selling"]')?.value || 0));
+
+        const hasAnyValue = name || category || stock !== 0 || cost !== 0 || selling !== 0;
+        if(!hasAnyValue) return;
+
+        if(!name){
+            errors.push("Row " + (index + 1) + ": Product name is required.");
+            return;
+        }
+
+        if(!Number.isFinite(stock) || !Number.isFinite(cost) || !Number.isFinite(selling)){
+            errors.push("Row " + (index + 1) + ": Invalid numeric value.");
+            return;
+        }
+
+        const now = new Date().toISOString();
+
+        productsToAdd.push({
+            id:makeId("PROD"),
+            owner_id:currentUser.id,
+            name,
+            category,
+            size:"",
+            color:"",
+            cost_price:cost,
+            selling_price:selling,
+            stock,
+            created_at:now,
+            updated_at:now
+        });
+    });
+
+    if(errors.length){
+        alert(errors.join("\n"));
+        return;
+    }
+
+    if(!productsToAdd.length){
+        alert("Please enter at least one product.");
+        return;
+    }
+
+    const originalInventory = inventory.slice();
+    const btn = document.getElementById("saveBatchProductsBtn");
+
+    inventory = [...productsToAdd, ...inventory];
+    saveLocalState();
+    renderAll();
+
+    if(btn){
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i>Saving...';
+    }
+
+    try{
+        setSyncStatus("Saving Products...","loading");
+
+        const synced = await syncTable("inventory",inventory);
+        if(!synced) throw new Error("Inventory sync failed.");
+
+        setSyncStatus("Cloud Synced","success");
+        closeBatchProductModal();
+
+        alert(
+            productsToAdd.length === 1
+                ? "1 product added successfully."
+                : productsToAdd.length + " products added successfully."
+        );
+
+    }catch(error){
+        console.error(error);
+
+        inventory = originalInventory;
+        saveLocalState();
+        renderAll();
+
+        setSyncStatus("Sync Error","error");
+        alert("Products were not synced to Supabase. Your inventory was restored.\n\n" + error.message);
+    }finally{
+        if(btn){
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Save All Products';
+        }
     }
 }
 
