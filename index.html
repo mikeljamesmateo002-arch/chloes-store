@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chloe's Store - Fashion Sales ERP V3.3</title>
-<meta name="app-version" content="3.3.0">
+<meta name="app-version" content="3.4.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
@@ -100,7 +100,7 @@ input:focus,select:focus,textarea:focus{
             </h1>
 
             <p class="text-slate-500 mt-1">
-                Fashion Sales ERP <span class="font-semibold">V3.3.0</span>
+                Fashion Sales ERP <span class="font-semibold">V3.4.0</span>
             </p>
         </div>
 
@@ -308,7 +308,7 @@ input:focus,select:focus,textarea:focus{
                 <div class="card p-4 mb-6">
                     <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3">
                         <div><h3 class="font-bold">Dashboard Date Filter</h3><p class="text-xs text-slate-400">Select one day or a date range. Dashboard numbers follow this filter.</p></div>
-                        <div class="flex flex-col sm:flex-row gap-2"><input id="reportDateStart" type="date" onchange="applyDateFilter()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm"><span class="hidden sm:flex items-center text-slate-400">to</span><input id="reportDateEnd" type="date" onchange="applyDateFilter()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm"><button onclick="clearDateFilter()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold">All Dates</button></div>
+                        <div class="flex flex-col sm:flex-row gap-2"><input id="reportDateStart" type="date" onchange="applyDateFilter('dashboard')" class="px-3 py-2 border border-slate-300 rounded-lg text-sm"><span class="hidden sm:flex items-center text-slate-400">to</span><input id="reportDateEnd" type="date" onchange="applyDateFilter('dashboard')" class="px-3 py-2 border border-slate-300 rounded-lg text-sm"><button onclick="clearDateFilter()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold">All Dates</button></div>
                     </div><div id="activeDateFilterLabel" class="text-xs text-blue-600 font-semibold mt-2">All dates</div>
                 </div>
 
@@ -680,6 +680,7 @@ input:focus,select:focus,textarea:focus{
 
                             <thead class="bg-slate-50">
                                 <tr>
+                                    <th class="text-center px-3 py-4"><input type="checkbox" id="selectAllInventory" onchange="toggleSelectAll('inventory',this.checked)"></th>
                                     <th class="text-left px-5 py-4">Product Name</th>
                                     <th class="text-left px-5 py-4">Category</th>
                                     <th class="text-right px-5 py-4">Cost Price</th>
@@ -706,6 +707,7 @@ input:focus,select:focus,textarea:focus{
                         <table class="w-full text-sm">
                             <thead class="bg-slate-50">
                                 <tr>
+                                    <th class="text-center px-3 py-4"><input type="checkbox" id="selectAllStock" onchange="toggleSelectAll('stock',this.checked)"></th>
                                     <th class="text-left px-5 py-4">Date</th>
                                     <th class="text-left px-5 py-4">Product</th>
                                     <th class="text-left px-5 py-4">Type</th>
@@ -742,6 +744,7 @@ input:focus,select:focus,textarea:focus{
 
                             <thead class="bg-slate-50">
                                 <tr>
+                                    <th class="text-center px-3 py-4"><input type="checkbox" id="selectAllOrders" onchange="toggleSelectAll('orders',this.checked)"></th>
                                     <th class="text-left px-5 py-4">Order ID</th>
                                     <th class="text-left px-5 py-4">Customer</th>
                                     <th class="text-left px-5 py-4">Channel</th>
@@ -789,6 +792,7 @@ input:focus,select:focus,textarea:focus{
                         <table class="w-full text-sm">
                             <thead class="bg-slate-50">
                                 <tr>
+                                    <th class="text-center px-3 py-4"><input type="checkbox" id="selectAllExpenses" onchange="toggleSelectAll('expenses',this.checked)"></th>
                                     <th class="text-left px-5 py-4">Date</th>
                                     <th class="text-left px-5 py-4">Category</th>
                                     <th class="text-left px-5 py-4">Description</th>
@@ -815,6 +819,7 @@ input:focus,select:focus,textarea:focus{
                         <table class="w-full text-sm">
                             <thead class="bg-slate-50">
                                 <tr>
+                                    <th class="text-center px-3 py-4"><input type="checkbox" id="selectAllCustomers" onchange="toggleSelectAll('customers',this.checked)"></th>
                                     <th class="text-left px-5 py-4">Customer</th>
                                     <th class="text-left px-5 py-4">Contact</th>
                                     <th class="text-center px-5 py-4">Orders</th>
@@ -837,7 +842,7 @@ input:focus,select:focus,textarea:focus{
                 <div class="card p-4 mb-6">
                     <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3">
                         <div><h3 class="font-bold">Report Date Filter</h3><p class="text-xs text-slate-400">Same date filter as the Dashboard, Expenses and Stock History.</p></div>
-                        <div class="flex flex-col sm:flex-row gap-2"><input id="reportDateStart2" type="date" onchange="applyDateFilter()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm"><span class="hidden sm:flex items-center text-slate-400">to</span><input id="reportDateEnd2" type="date" onchange="applyDateFilter()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm"><button onclick="clearDateFilter()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold">All Dates</button></div>
+                        <div class="flex flex-col sm:flex-row gap-2"><input id="reportDateStart2" type="date" onchange="applyDateFilter('reports')" class="px-3 py-2 border border-slate-300 rounded-lg text-sm"><span class="hidden sm:flex items-center text-slate-400">to</span><input id="reportDateEnd2" type="date" onchange="applyDateFilter('reports')" class="px-3 py-2 border border-slate-300 rounded-lg text-sm"><button onclick="clearDateFilter()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold">All Dates</button></div>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
@@ -1374,7 +1379,7 @@ function renderAttributeRows(attrs={}){const box=document.getElementById("produc
 function collectProductAttributes(){const attrs={};document.querySelectorAll("#productAttributes .product-attribute-row").forEach(row=>{const k=row.querySelector("[data-attr-name]")?.value.trim()||"";const v=row.querySelector("[data-attr-value]")?.value.trim()||"";if(k&&v)attrs[k]=v;});return attrs;}
 function productDetailsText(product){return Object.entries(getProductAttributes(product)).map(x=>x[0]+": "+x[1]).join(" • ");}
 function dateFilterLabel(){if(!dateFilterStart&&!dateFilterEnd)return "All dates";if(dateFilterStart&&dateFilterEnd&&dateFilterStart!==dateFilterEnd)return dateFilterStart+" → "+dateFilterEnd;return dateFilterStart||dateFilterEnd;}
-function applyDateFilter(){const s=document.getElementById("reportDateStart")?.value||document.getElementById("reportDateStart2")?.value||"",e=document.getElementById("reportDateEnd")?.value||document.getElementById("reportDateEnd2")?.value||"";if(s&&e&&s>e){alert("Start date cannot be later than end date.");return;}dateFilterStart=s;dateFilterEnd=e;renderAll();}
+function applyDateFilter(source="dashboard"){const startId=source==="reports"?"reportDateStart2":"reportDateStart",endId=source==="reports"?"reportDateEnd2":"reportDateEnd";const s=document.getElementById(startId)?.value||"",e=document.getElementById(endId)?.value||"";if(s&&e&&s>e){alert("Start date cannot be later than end date.");syncDateFilterInputs();return;}dateFilterStart=s;dateFilterEnd=e;syncDateFilterInputs();renderAll();}
 function clearDateFilter(){dateFilterStart="";dateFilterEnd="";["reportDateStart","reportDateEnd","reportDateStart2","reportDateEnd2"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});renderAll();}
 function syncDateFilterInputs(){["reportDateStart","reportDateStart2"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=dateFilterStart;});["reportDateEnd","reportDateEnd2"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=dateFilterEnd;});}
 function getFilteredCapital(){if(!dateFilterStart&&!dateFilterEnd)return inventory.reduce((s,p)=>s+Number(p.cost_price||0)*Number(p.stock||0),0);let total=0;inventory.filter(p=>p.created_at&&isDateInFilter(p.created_at)).forEach(p=>total+=Number(p.cost_price||0)*Number(p.stock||0));getFilteredStockMovements().filter(m=>Number(m.quantity_changed||0)>0).forEach(m=>{const p=inventory.find(x=>String(x.id)===String(m.product_id));if(p)total+=Number(p.cost_price||0)*Number(m.quantity_changed||0);});return total;}
@@ -2470,6 +2475,9 @@ function renderPOSProducts(){
                     <div class="text-xs text-slate-400 mt-1">
                         ${escapeHtml(product.category || "Uncategorized")}
                     </div>
+                    <div class="text-xs text-slate-500 mt-1 line-clamp-2" title="${escapeHtml(productDetailsText(product) || "No additional details")}">
+                        ${escapeHtml(productDetailsText(product) || "No additional details")}
+                    </div>
 
                     <div class="flex justify-between items-center mt-3">
 
@@ -2545,6 +2553,7 @@ function addToCart(productId){
         cart.push({
             product_id:product.id,
             name:product.name,
+            details:productDetailsText(product),
             cost_price:Number(product.cost_price || 0),
             selling_price:Number(product.selling_price || 0),
             quantity:1
@@ -2658,6 +2667,9 @@ function renderCart(){
 
                             <div class="text-xs text-slate-400">
                                 ${money(item.selling_price)} each
+                            </div>
+                            <div class="text-[11px] text-slate-500 mt-1 break-words">
+                                ${escapeHtml(item.details || "No additional details")}
                             </div>
                         </div>
 
@@ -3199,6 +3211,34 @@ async function submitOrder(){
 }
 
 
+
+// ============================================================
+// BATCH ADD PRODUCTS
+// ============================================================
+function openBatchProductModal(){const modal=document.getElementById("batchProductModal");if(!modal)return;clearBatchProductRows();addBatchProductRow();modal.classList.remove("hidden");}
+function closeBatchProductModal(){document.getElementById("batchProductModal")?.classList.add("hidden");}
+function addBatchProductRow(name="",category="",stock=0,cost=0,selling=0){
+    const box=document.getElementById("batchProductRows");if(!box)return;
+    const row=document.createElement("tr");row.className="border-t border-slate-100";
+    row.innerHTML='<td class="px-3 py-2"><input data-batch="name" value="'+escapeHtml(name)+'" class="w-full px-2 py-2 border rounded" placeholder="Product name"></td><td class="px-3 py-2"><input data-batch="category" value="'+escapeHtml(category)+'" class="w-full px-2 py-2 border rounded" placeholder="Category"></td><td class="px-3 py-2"><input data-batch="stock" type="number" min="0" value="'+Number(stock||0)+'" class="w-full px-2 py-2 border rounded text-right"></td><td class="px-3 py-2"><input data-batch="cost" type="number" min="0" step="0.01" value="'+Number(cost||0)+'" class="w-full px-2 py-2 border rounded text-right"></td><td class="px-3 py-2"><input data-batch="selling" type="number" min="0" step="0.01" value="'+Number(selling||0)+'" class="w-full px-2 py-2 border rounded text-right"></td><td class="px-3 py-2 text-center"><button type="button" onclick="this.closest(\'tr\').remove()" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td>';
+    box.appendChild(row);
+}
+function clearBatchProductRows(){const box=document.getElementById("batchProductRows");if(box)box.innerHTML="";}
+async function saveBatchProducts(){
+    if(!currentUser){alert("Please sign in.");return;}
+    const rows=[...document.querySelectorAll("#batchProductRows tr")],products=[],now=new Date().toISOString();
+    for(const row of rows){
+        const name=row.querySelector('[data-batch="name"]')?.value.trim()||"",category=row.querySelector('[data-batch="category"]')?.value.trim()||"",stock=Math.max(0,Number(row.querySelector('[data-batch="stock"]')?.value||0)),cost=Math.max(0,Number(row.querySelector('[data-batch="cost"]')?.value||0)),selling=Math.max(0,Number(row.querySelector('[data-batch="selling"]')?.value||0));
+        if(!name)continue;
+        products.push({id:makeId("PROD"),owner_id:currentUser.id,name,category,size:"",color:"",cost_price:cost,selling_price:selling,stock,created_at:now,updated_at:now});
+    }
+    if(!products.length){alert("Add at least one product with a name.");return;}
+    const btn=document.getElementById("saveBatchProductsBtn");
+    try{if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i>Saving...';}inventory=[...products,...inventory];saveLocalState();renderAll();setSyncStatus("Saving batch...","loading");const ok=await syncTable("inventory",inventory);if(!ok)throw new Error("Inventory sync failed.");closeBatchProductModal();setSyncStatus("Cloud Synced","success");alert(products.length+" product"+(products.length!==1?"s":"")+" added successfully.");}
+    catch(error){console.error(error);setSyncStatus("Sync Error","error");alert("Products were added locally but cloud sync failed:\n"+error.message);}
+    finally{if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Save All Products';}}
+}
+
 // ============================================================
 // INVENTORY TABLE
 // ============================================================
@@ -3215,7 +3255,7 @@ function renderInventoryTable(){
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="6"
+                <td colspan="7"
                     class="text-center py-12 text-slate-400">
                     No products yet.
                 </td>
@@ -3253,7 +3293,7 @@ function renderInventoryTable(){
     });
 
     if(!filteredInventory.length){
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-10 text-slate-400">No matching products.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-10 text-slate-400">No matching products.</td></tr>';
         return;
     }
 
@@ -3267,8 +3307,10 @@ function renderInventoryTable(){
             return `
                 <tr class="border-t border-slate-100">
 
+                    <td class="px-3 py-4 text-center"><input type="checkbox" class="bulk-check" data-bulk-type="inventory" value="${escapeHtml(product.id)}" onchange="toggleBulkSelection('inventory','${product.id}',this.checked)"></td>
                     <td class="px-5 py-4 font-semibold">
                         ${escapeHtml(product.name)}
+                        <div class="text-xs text-slate-500 font-normal mt-1">${escapeHtml(productDetailsText(product) || "No additional details")}</div>
                     </td>
 
                     <td class="px-5 py-4 text-slate-500">
@@ -3328,7 +3370,7 @@ function renderInventoryTable(){
 // STOCK HISTORY
 // ============================================================
 
-async function renderStockHistory(){const tbody=document.getElementById("stockHistoryTable");if(!tbody)return;const rows=getFilteredStockMovements().slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)).slice(0,100);if(!rows.length){tbody.innerHTML='<tr><td colspan="7" class="text-center py-10 text-slate-400">No stock movements for the selected dates.</td></tr>';return;}tbody.innerHTML=rows.map(m=>{const q=Number(m.quantity_changed||0),sign=q>0?"+":"",cls=q>0?"text-emerald-600":"text-red-500";return '<tr class="border-t border-slate-100"><td class="px-5 py-4 text-slate-500">'+(m.date?new Date(m.date).toLocaleString("en-PH"):"-")+'</td><td class="px-5 py-4 font-semibold">'+escapeHtml(m.product_name||"-")+'</td><td class="px-5 py-4">'+escapeHtml(m.change_type||"-")+'</td><td class="px-5 py-4 text-right font-bold '+cls+'">'+sign+q+'</td><td class="px-5 py-4 text-right">'+Number(m.new_stock||0)+'</td><td class="px-5 py-4 text-slate-500">'+escapeHtml(m.note||"-")+'</td><td class="px-5 py-4 text-right"><button onclick="deleteStockMovement(\''+m.id+'\')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join("");}
+async function renderStockHistory(){const tbody=document.getElementById("stockHistoryTable");if(!tbody)return;const rows=getFilteredStockMovements().slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)).slice(0,100);if(!rows.length){tbody.innerHTML='<tr><td colspan="7" class="text-center py-10 text-slate-400">No stock movements for the selected dates.</td></tr>';return;}tbody.innerHTML=rows.map(m=>{const q=Number(m.quantity_changed||0),sign=q>0?"+":"",cls=q>0?"text-emerald-600":"text-red-500";return '<tr class="border-t border-slate-100"><td class="px-3 py-4 text-center"><input type="checkbox" class="bulk-check" data-bulk-type="stock" value="'+escapeHtml(m.id)+'" onchange="toggleBulkSelection(\'stock\',\''+m.id+'\',this.checked)"></td><td class="px-5 py-4 text-slate-500">'+(m.date?new Date(m.date).toLocaleString("en-PH"):"-")+'</td><td class="px-5 py-4 font-semibold">'+escapeHtml(m.product_name||"-")+'</td><td class="px-5 py-4">'+escapeHtml(m.change_type||"-")+'</td><td class="px-5 py-4 text-right font-bold '+cls+'">'+sign+q+'</td><td class="px-5 py-4 text-right">'+Number(m.new_stock||0)+'</td><td class="px-5 py-4 text-slate-500">'+escapeHtml(m.note||"-")+'</td><td class="px-5 py-4 text-right"><button onclick="deleteStockMovement(\''+m.id+'\')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join("");}
 async function deleteStockMovement(id){const m=stockMovements.find(x=>String(x.id)===String(id));if(!m)return;if(!confirm("Delete this stock history record? This removes history only; current stock will not change."))return;stockMovements=stockMovements.filter(x=>String(x.id)!==String(id));saveLocalState();renderAll();try{setSyncStatus("Deleting...","loading");const r=await supabaseClient.from("stock_movements").delete().eq("id",id).eq("owner_id",currentUser.id);if(r.error)throw r.error;setSyncStatus("Cloud Synced","success");}catch(error){setSyncStatus("Sync Error","error");alert("Stock history deleted locally but cloud delete failed:\n"+error.message);}}
 
 
@@ -3357,7 +3399,7 @@ function openExpenseModal(id=""){
 
 function closeExpenseModal(){ document.getElementById('expenseModal').classList.add('hidden'); }
 
-function renderExpenses(){const tbody=document.getElementById("expensesTable"),rows=getFilteredExpenses().slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)),total=rows.reduce((s,e)=>s+Number(e.amount||0),0);if(document.getElementById("expenseTotal"))document.getElementById("expenseTotal").textContent=money(total);if(!tbody)return;if(!rows.length){tbody.innerHTML='<tr><td colspan="5" class="text-center py-12 text-slate-400">No expenses for the selected dates.</td></tr>';return;}tbody.innerHTML=rows.map(e=>'<tr class="border-t border-slate-100"><td class="px-5 py-4">'+(e.date?new Date(e.date).toLocaleDateString("en-PH"):"-")+'</td><td class="px-5 py-4 font-semibold">'+escapeHtml(e.category||"Other")+'</td><td class="px-5 py-4 text-slate-500">'+escapeHtml(e.description||"-")+'</td><td class="px-5 py-4 text-right font-bold">'+money(e.amount)+'</td><td class="px-5 py-4 text-right"><button onclick="openExpenseModal(\''+e.id+'\')" class="text-blue-600 mr-3"><i class="fa-solid fa-pen"></i></button><button onclick="deleteExpense(\''+e.id+'\')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>').join("");}
+function renderExpenses(){const tbody=document.getElementById("expensesTable"),rows=getFilteredExpenses().slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)),total=rows.reduce((s,e)=>s+Number(e.amount||0),0);if(document.getElementById("expenseTotal"))document.getElementById("expenseTotal").textContent=money(total);if(!tbody)return;if(!rows.length){tbody.innerHTML='<tr><td colspan="5" class="text-center py-12 text-slate-400">No expenses for the selected dates.</td></tr>';return;}tbody.innerHTML=rows.map(e=>'<tr class="border-t border-slate-100"><td class="px-3 py-4 text-center"><input type="checkbox" class="bulk-check" data-bulk-type="expenses" value="'+escapeHtml(e.id)+'" onchange="toggleBulkSelection(\'expenses\',\''+e.id+'\',this.checked)"></td><td class="px-5 py-4">'+(e.date?new Date(e.date).toLocaleDateString("en-PH"):"-")+'</td><td class="px-5 py-4 font-semibold">'+escapeHtml(e.category||"Other")+'</td><td class="px-5 py-4 text-slate-500">'+escapeHtml(e.description||"-")+'</td><td class="px-5 py-4 text-right font-bold">'+money(e.amount)+'</td><td class="px-5 py-4 text-right"><button onclick="openExpenseModal(\''+e.id+'\')" class="text-blue-600 mr-3"><i class="fa-solid fa-pen"></i></button><button onclick="deleteExpense(\''+e.id+'\')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>').join("");}
 
 
 async function saveExpense(){
@@ -3401,7 +3443,7 @@ async function deleteExpense(id){
 // CUSTOMERS
 // ============================================================
 
-async function renderCustomers(){const tbody=document.getElementById("customersTable");if(!tbody)return;const rows=customers.slice().sort((a,b)=>Number(b.total_spent||0)-Number(a.total_spent||0));if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="text-center py-12 text-slate-400">No customers yet.</td></tr>';return;}tbody.innerHTML=rows.map(x=>'<tr class="border-t border-slate-100"><td class="px-5 py-4 font-semibold">'+escapeHtml(x.name||"Unnamed")+'</td><td class="px-5 py-4 text-slate-500">'+escapeHtml(x.contact||"-")+'</td><td class="px-5 py-4 text-center">'+Number(x.total_orders||0)+'</td><td class="px-5 py-4 text-right font-semibold">'+money(x.total_spent)+'</td><td class="px-5 py-4 text-slate-500">'+(x.last_order_date?new Date(x.last_order_date).toLocaleDateString("en-PH"):"-")+'</td><td class="px-5 py-4 text-right whitespace-nowrap"><button onclick="viewCustomerHistory(\''+x.id+'\')" class="text-blue-600 font-semibold mr-3">View</button><button onclick="deleteCustomer(\''+x.id+'\')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>').join("");}
+async function renderCustomers(){const tbody=document.getElementById("customersTable");if(!tbody)return;const rows=customers.slice().sort((a,b)=>Number(b.total_spent||0)-Number(a.total_spent||0));if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="text-center py-12 text-slate-400">No customers yet.</td></tr>';return;}tbody.innerHTML=rows.map(x=>'<tr class="border-t border-slate-100"><td class="px-3 py-4 text-center"><input type="checkbox" class="bulk-check" data-bulk-type="customers" value="'+escapeHtml(x.id)+'" onchange="toggleBulkSelection(\'customers\',\''+x.id+'\',this.checked)"></td><td class="px-5 py-4 font-semibold">'+escapeHtml(x.name||"Unnamed")+'</td><td class="px-5 py-4 text-slate-500">'+escapeHtml(x.contact||"-")+'</td><td class="px-5 py-4 text-center">'+Number(x.total_orders||0)+'</td><td class="px-5 py-4 text-right font-semibold">'+money(x.total_spent)+'</td><td class="px-5 py-4 text-slate-500">'+(x.last_order_date?new Date(x.last_order_date).toLocaleDateString("en-PH"):"-")+'</td><td class="px-5 py-4 text-right whitespace-nowrap"><button onclick="viewCustomerHistory(\''+x.id+'\')" class="text-blue-600 font-semibold mr-3">View</button><button onclick="deleteCustomer(\''+x.id+'\')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>').join("");}
 async function deleteCustomer(id){const x=customers.find(c=>String(c.id)===String(id));if(!x)return;if(!confirm('Delete customer "'+(x.name||"Unnamed")+'"? Sales/orders will remain.'))return;customers=customers.filter(c=>String(c.id)!==String(id));saveLocalState();renderAll();try{setSyncStatus("Deleting...","loading");const r=await supabaseClient.from("customers").delete().eq("id",id).eq("owner_id",currentUser.id);if(r.error)throw r.error;setSyncStatus("Cloud Synced","success");}catch(error){setSyncStatus("Sync Error","error");alert("Customer deleted locally but cloud delete failed:\n"+error.message);}}
 
 
@@ -3471,7 +3513,7 @@ let activeReceipt=null;
 function openReceiptModal(sale){
     activeReceipt=sale;
     const items=(sale.items||[]).map(function(item){
-        return '<div class="flex justify-between gap-3 py-2 border-b border-slate-100"><div class="min-w-0"><div class="font-semibold text-sm">'+escapeHtml(item.name)+'</div><div class="text-xs text-slate-400">'+item.quantity+' × '+money(item.selling_price)+'</div></div><div class="font-semibold text-sm whitespace-nowrap">'+money(Number(item.quantity||0)*Number(item.selling_price||0))+'</div></div>';
+        return '<div class="flex justify-between gap-3 py-2 border-b border-slate-100"><div class="min-w-0"><div class="font-semibold text-sm">'+escapeHtml(item.name)+'</div><div class="text-xs text-slate-400">'+item.quantity+' × '+money(item.selling_price)+'</div><div class="text-[11px] text-slate-500 mt-1">'+escapeHtml(item.details||"No additional details")+'</div></div><div class="font-semibold text-sm whitespace-nowrap">'+money(Number(item.quantity||0)*Number(item.selling_price||0))+'</div></div>';
     }).join("");
     document.getElementById("receiptContent").innerHTML='<div class="bg-white"><div class="text-center pb-4 border-b border-slate-200"><div class="font-extrabold text-lg">Chloe\'s Store</div><div class="text-xs text-slate-400 mt-1">Digital Sales Receipt</div></div><div class="py-4 space-y-1 text-xs"><div class="flex justify-between"><span class="text-slate-400">Order</span><span class="font-semibold">'+escapeHtml(sale.id)+'</span></div><div class="flex justify-between"><span class="text-slate-400">Date</span><span>'+ (sale.date?new Date(sale.date).toLocaleString("en-PH"):"-") +'</span></div><div class="flex justify-between"><span class="text-slate-400">Customer</span><span>'+escapeHtml(sale.customer_name||"Walk-in Customer")+'</span></div><div class="flex justify-between"><span class="text-slate-400">Channel</span><span>'+escapeHtml(sale.channel||"-")+'</span></div></div>'+items+'<div class="pt-4 mt-2 border-t border-slate-200 space-y-2"><div class="flex justify-between text-sm"><span>Subtotal</span><span>'+money(sale.subtotal)+'</span></div><div class="flex justify-between text-sm"><span>Discount</span><span>-'+money(sale.discount)+'</span></div><div class="flex justify-between text-sm"><span>Shipping</span><span>'+money(sale.shipping)+'</span></div><div class="flex justify-between text-lg font-extrabold"><span>Total</span><span>'+money(sale.total)+'</span></div><div class="flex justify-between text-sm"><span>Payment</span><span>'+money(sale.payment_amount||sale.total)+'</span></div><div class="flex justify-between text-sm"><span>Change</span><span>'+money(sale.change_amount||0)+'</span></div></div></div>';
     document.getElementById("receiptModal").classList.remove("hidden");
@@ -3585,7 +3627,7 @@ async function deleteProduct(id){
 // ORDERS
 // ============================================================
 
-async function renderOrdersTable(){const tbody=document.getElementById("ordersTable");if(!tbody)return;const rows=getFilteredSales().slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));if(!rows.length){tbody.innerHTML='<tr><td colspan="7" class="text-center py-12 text-slate-400">No orders for the selected dates.</td></tr>';return;}tbody.innerHTML=rows.map(sale=>{const status=sale.status||"Completed",date=sale.date?new Date(sale.date).toLocaleDateString("en-PH"):"-",ret=(status==="Completed"||status==="Partially Returned")?'<button onclick="openReturnModal(\''+sale.id+'\')" class="text-orange-500 font-semibold text-xs"><i class="fa-solid fa-rotate-left mr-1"></i>Return</button>':"";return '<tr class="border-t border-slate-100"><td class="px-5 py-4"><div class="font-semibold">'+escapeHtml(sale.id)+'</div><div class="text-xs text-slate-400">'+date+'</div></td><td class="px-5 py-4">'+escapeHtml(sale.customer_name||"Walk-in Customer")+'</td><td class="px-5 py-4">'+escapeHtml(sale.channel||"-")+'</td><td class="px-5 py-4">'+escapeHtml(sale.courier||"-")+'</td><td class="px-5 py-4 text-right font-bold">'+money(sale.total)+'</td><td class="px-5 py-4 text-center"><span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold">'+escapeHtml(status)+'</span></td><td class="px-5 py-4 text-right"><div class="flex justify-end gap-3">'+ret+'<button onclick="deleteOrder(\''+sale.id+'\')" class="text-red-500 font-semibold text-xs"><i class="fa-solid fa-trash mr-1"></i>Delete</button></div></td></tr>';}).join("");}
+async function renderOrdersTable(){const tbody=document.getElementById("ordersTable");if(!tbody)return;const rows=getFilteredSales().slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));if(!rows.length){tbody.innerHTML='<tr><td colspan="7" class="text-center py-12 text-slate-400">No orders for the selected dates.</td></tr>';return;}tbody.innerHTML=rows.map(sale=>{const status=sale.status||"Completed",date=sale.date?new Date(sale.date).toLocaleDateString("en-PH"):"-",ret=(status==="Completed"||status==="Partially Returned")?'<button onclick="openReturnModal(\''+sale.id+'\')" class="text-orange-500 font-semibold text-xs"><i class="fa-solid fa-rotate-left mr-1"></i>Return</button>':"";return '<tr class="border-t border-slate-100"><td class="px-3 py-4 text-center"><input type="checkbox" class="bulk-check" data-bulk-type="orders" value="'+escapeHtml(sale.id)+'" onchange="toggleBulkSelection(\'orders\',\''+sale.id+'\',this.checked)"></td><td class="px-5 py-4"><div class="font-semibold">'+escapeHtml(sale.id)+'</div><div class="text-xs text-slate-400">'+date+'</div></td><td class="px-5 py-4">'+escapeHtml(sale.customer_name||"Walk-in Customer")+'</td><td class="px-5 py-4">'+escapeHtml(sale.channel||"-")+'</td><td class="px-5 py-4">'+escapeHtml(sale.courier||"-")+'</td><td class="px-5 py-4 text-right font-bold">'+money(sale.total)+'</td><td class="px-5 py-4 text-center"><span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold">'+escapeHtml(status)+'</span></td><td class="px-5 py-4 text-right"><div class="flex justify-end gap-3">'+ret+'<button onclick="deleteOrder(\''+sale.id+'\')" class="text-red-500 font-semibold text-xs"><i class="fa-solid fa-trash mr-1"></i>Delete</button></div></td></tr>';}).join("");}
 async function deleteOrder(id){const sale=sales.find(s=>String(s.id)===String(id));if(!sale)return;if(!confirm('Delete order "'+sale.id+'"? Linked return records will also be removed.'))return;sales=sales.filter(s=>String(s.id)!==String(id));returnsData=returnsData.filter(r=>String(r.sale_id)!==String(id));saveLocalState();renderAll();try{setSyncStatus("Deleting order...","loading");const rd=await supabaseClient.from("returns").delete().eq("sale_id",id).eq("owner_id",currentUser.id);if(rd.error)throw rd.error;const sd=await supabaseClient.from("sales").delete().eq("id",id).eq("owner_id",currentUser.id);if(sd.error)throw sd.error;setSyncStatus("Cloud Synced","success");}catch(error){setSyncStatus("Sync Error","error");alert("Order deleted locally but cloud delete failed:\n"+error.message);}}
 
 
@@ -3667,7 +3709,10 @@ function openReturnModal(saleId){
                                 ${escapeHtml(item.name)}
                             </div>
 
-                            <div class="text-xs text-slate-400">
+                            <div class="text-xs text-slate-500 mt-1">
+                                ${escapeHtml(item.details || "No additional details")}
+                            </div>
+                            <div class="text-xs text-slate-400 mt-1">
                                 Sold: ${item.quantity}
                                 • Already returned: ${alreadyReturned}
                                 • Remaining: ${remaining}
@@ -4080,6 +4125,22 @@ else if(type==="expenses"){title.textContent="Expenses Breakdown";html=fe.map(e=
 else{title.textContent="Low Stock Breakdown";const rows=inventory.filter(p=>Number(p.stock||0)<=5);html=rows.map(p=>'<div class="flex justify-between py-3 border-b"><div><b>'+escapeHtml(p.name)+'</b><div class="text-xs text-slate-400">'+escapeHtml(productDetailsText(p)||"No details")+'</div></div><b>'+Number(p.stock||0)+'</b></div>').join("")||'<div class="py-8 text-center text-slate-400">No low-stock products.</div>';html+='<div class="text-xs text-slate-400 mt-4">Low Stock is a current inventory status, not a historical snapshot.</div>';}
 box.innerHTML=html;modal.classList.remove("hidden");}
 function closeDashboardBreakdown(){document.getElementById("dashboardBreakdownModal")?.classList.add("hidden");}
+
+// ============================================================
+// BULK SELECTION & ACTIONS
+// ============================================================
+let bulkSelection={inventory:new Set(),customers:new Set(),orders:new Set(),expenses:new Set(),stock:new Set()};
+function toggleBulkSelection(type,id,checked){if(!bulkSelection[type])bulkSelection[type]=new Set();checked?bulkSelection[type].add(String(id)):bulkSelection[type].delete(String(id));renderBulkActionBar();}
+function toggleSelectAll(type,checked){const ids={inventory:inventory.filter(p=>isInventoryVisible(p)).map(x=>x.id),customers:customers.map(x=>x.id),orders:getFilteredSales().map(x=>x.id),expenses:getFilteredExpenses().map(x=>x.id),stock:getFilteredStockMovements().slice(0,100).map(x=>x.id)}[type]||[];bulkSelection[type]=checked?new Set(ids):new Set();renderBulkActionBar();document.querySelectorAll('.bulk-check[data-bulk-type="'+type+'"]').forEach(el=>el.checked=checked);}
+function isInventoryVisible(product){const search=String(document.getElementById("inventorySearch")?.value||"").trim().toLowerCase(),stockFilter=String(document.getElementById("inventoryStockFilter")?.value||""),categoryFilter=String(document.getElementById("inventoryCategoryFilter")?.value||""),name=String(product.name||"").toLowerCase(),cat=String(product.category||"").toLowerCase(),stock=Number(product.stock||0);return (!search||name.includes(search)||cat.includes(search)||String(product.id||"").toLowerCase().includes(search))&&(!categoryFilter||String(product.category||"")===categoryFilter)&&(!stockFilter||(stockFilter==="low"&&stock>0&&stock<=5)||(stockFilter==="out"&&stock<=0)||(stockFilter==="healthy"&&stock>5));}
+function clearBulkSelection(){Object.keys(bulkSelection).forEach(k=>bulkSelection[k].clear());document.querySelectorAll(".bulk-check").forEach(x=>x.checked=false);document.querySelectorAll('input[id^="selectAll"]').forEach(x=>x.checked=false);renderBulkActionBar();}
+function selectedBulkType(){return Object.entries(bulkSelection).find(([k,v])=>v.size>0)?.[0]||"";}
+function renderBulkActionBar(){let bar=document.getElementById("bulkActionBar"),type=selectedBulkType(),count=type?bulkSelection[type].size:0;if(!count){bar?.remove();return;}if(!bar){bar=document.createElement("div");bar.id="bulkActionBar";bar.className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[190] bg-slate-900 text-white rounded-2xl shadow-2xl px-4 py-3 flex flex-wrap items-center gap-2 max-w-[95vw]";document.body.appendChild(bar);}const edit=type==="inventory"?'<button onclick="openBulkEditModal()" class="bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-lg text-sm font-bold"><i class="fa-solid fa-pen mr-1"></i>Bulk Edit</button>':"";bar.innerHTML='<span class="font-bold mr-1">'+count+' selected</span>'+edit+'<button onclick="bulkDeleteSelected()" class="bg-red-500 hover:bg-red-600 px-3 py-2 rounded-lg text-sm font-bold"><i class="fa-solid fa-trash mr-1"></i>Delete</button><button onclick="clearBulkSelection()" class="bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg text-sm font-semibold">Clear</button>';}
+async function bulkDeleteSelected(){const type=selectedBulkType(),ids=[...(bulkSelection[type]||[])];if(!ids.length)return;const labels={inventory:"products",customers:"customers",orders:"orders",expenses:"expenses",stock:"stock history"};if(!confirm("Delete "+ids.length+" selected "+(labels[type]||"records")+"? This action cannot be undone."))return;try{setSyncStatus("Bulk deleting...","loading");if(type==="inventory"){inventory=inventory.filter(x=>!ids.includes(String(x.id)));const r=await supabaseClient.from("inventory").delete().in("id",ids).eq("owner_id",currentUser.id);if(r.error)throw r.error;}else if(type==="customers"){customers=customers.filter(x=>!ids.includes(String(x.id)));const r=await supabaseClient.from("customers").delete().in("id",ids).eq("owner_id",currentUser.id);if(r.error)throw r.error;}else if(type==="expenses"){expenses=expenses.filter(x=>!ids.includes(String(x.id)));const r=await supabaseClient.from("expenses").delete().in("id",ids).eq("owner_id",currentUser.id);if(r.error)throw r.error;}else if(type==="stock"){stockMovements=stockMovements.filter(x=>!ids.includes(String(x.id)));const r=await supabaseClient.from("stock_movements").delete().in("id",ids).eq("owner_id",currentUser.id);if(r.error)throw r.error;}else if(type==="orders"){sales=sales.filter(x=>!ids.includes(String(x.id)));returnsData=returnsData.filter(x=>!ids.includes(String(x.sale_id)));const rr=await supabaseClient.from("returns").delete().in("sale_id",ids).eq("owner_id",currentUser.id);if(rr.error)throw rr.error;const sr=await supabaseClient.from("sales").delete().in("id",ids).eq("owner_id",currentUser.id);if(sr.error)throw sr.error;}saveLocalState();clearBulkSelection();renderAll();setSyncStatus("Cloud Synced","success");}catch(error){console.error(error);setSyncStatus("Sync Error","error");alert("Bulk delete encountered an error:\n"+error.message);renderAll();}}
+function openBulkEditModal(){if(selectedBulkType()!=="inventory")return;document.getElementById("bulkEditCategory").value="";document.getElementById("bulkEditCost").value="";document.getElementById("bulkEditSelling").value="";document.getElementById("bulkEditStockDelta").value="";document.getElementById("bulkEditModal").classList.remove("hidden");}
+function closeBulkEditModal(){document.getElementById("bulkEditModal")?.classList.add("hidden");}
+async function saveBulkEdit(){const ids=[...bulkSelection.inventory],category=document.getElementById("bulkEditCategory").value.trim(),cost=document.getElementById("bulkEditCost").value,selling=document.getElementById("bulkEditSelling").value,delta=document.getElementById("bulkEditStockDelta").value;if(!ids.length)return;if(!category&&cost===""&&selling===""&&delta===""){alert("Enter at least one change.");return;}const now=new Date().toISOString(),movements=[];inventory.forEach(p=>{if(!ids.includes(String(p.id)))return;const old=Number(p.stock||0);if(category)p.category=category;if(cost!=="")p.cost_price=Math.max(0,Number(cost));if(selling!=="")p.selling_price=Math.max(0,Number(selling));if(delta!==""){p.stock=Math.max(0,old+Number(delta));if(p.stock!==old)movements.push({id:makeId("MOV"),owner_id:currentUser.id,product_id:p.id,product_name:p.name,change_type:"BULK ADJUSTMENT",quantity_changed:p.stock-old,new_stock:p.stock,note:"Bulk stock adjustment",date:now});}p.updated_at=now;});try{setSyncStatus("Saving bulk edit...","loading");saveLocalState();const ok=await syncTable("inventory",inventory);if(!ok)throw new Error("Inventory sync failed.");if(movements.length){stockMovements.push(...movements);await syncTable("stock_movements",stockMovements.filter(m=>m.owner_id===currentUser.id));}closeBulkEditModal();clearBulkSelection();renderAll();setSyncStatus("Cloud Synced","success");}catch(error){setSyncStatus("Sync Error","error");alert("Bulk edit saved locally but cloud sync failed:\n"+error.message);}}
+
 // ============================================================
 // DEPLOYMENT / UPDATE CHECK
 // ============================================================
@@ -4159,5 +4220,5 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 </script>
 
-<div id="dashboardBreakdownModal" class="hidden fixed inset-0 z-[180] modal-bg flex items-center justify-center p-4"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"><div class="p-5 border-b flex items-center justify-between"><h3 id="dashboardBreakdownTitle" class="font-bold text-lg">Breakdown</h3><button onclick="closeDashboardBreakdown()" class="text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button></div><div id="dashboardBreakdownContent" class="p-5"></div></div></div></body>
+<div id="dashboardBreakdownModal" class="hidden fixed inset-0 z-[180] modal-bg flex items-center justify-center p-4"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"><div class="p-5 border-b flex items-center justify-between"><h3 id="dashboardBreakdownTitle" class="font-bold text-lg">Breakdown</h3><button onclick="closeDashboardBreakdown()" class="text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button></div><div id="dashboardBreakdownContent" class="p-5"></div></div></div><div id="bulkEditModal" class="hidden fixed inset-0 z-[185] modal-bg flex items-center justify-center p-4"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg"><div class="p-5 border-b flex items-center justify-between"><div><h3 class="font-bold text-lg">Bulk Edit Products</h3><p class="text-xs text-slate-400 mt-1">Leave a field blank to keep existing values.</p></div><button onclick="closeBulkEditModal()" class="text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button></div><div class="p-5 space-y-4"><div><label class="text-sm font-semibold">Category</label><input id="bulkEditCategory" class="w-full mt-1 px-3 py-2.5 border rounded-lg" placeholder="Set category for all selected"></div><div class="grid grid-cols-2 gap-3"><div><label class="text-sm font-semibold">Cost Price</label><input id="bulkEditCost" type="number" min="0" step="0.01" class="w-full mt-1 px-3 py-2.5 border rounded-lg" placeholder="No change"></div><div><label class="text-sm font-semibold">Selling Price</label><input id="bulkEditSelling" type="number" min="0" step="0.01" class="w-full mt-1 px-3 py-2.5 border rounded-lg" placeholder="No change"></div></div><div><label class="text-sm font-semibold">Stock Adjustment</label><input id="bulkEditStockDelta" type="number" step="1" class="w-full mt-1 px-3 py-2.5 border rounded-lg" placeholder="Example: +5 or -2"></div><button onclick="saveBulkEdit()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold">Apply Changes</button></div></div></div></body>
 </html>
