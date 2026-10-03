@@ -3360,7 +3360,7 @@ function closeExpenseModal(){ document.getElementById('expenseModal').classList.
 function renderExpenses(){const tbody=document.getElementById("expensesTable"),rows=getFilteredExpenses().slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)),total=rows.reduce((s,e)=>s+Number(e.amount||0),0);if(document.getElementById("expenseTotal"))document.getElementById("expenseTotal").textContent=money(total);if(!tbody)return;if(!rows.length){tbody.innerHTML='<tr><td colspan="5" class="text-center py-12 text-slate-400">No expenses for the selected dates.</td></tr>';return;}tbody.innerHTML=rows.map(e=>'<tr class="border-t border-slate-100"><td class="px-5 py-4">'+(e.date?new Date(e.date).toLocaleDateString("en-PH"):"-")+'</td><td class="px-5 py-4 font-semibold">'+escapeHtml(e.category||"Other")+'</td><td class="px-5 py-4 text-slate-500">'+escapeHtml(e.description||"-")+'</td><td class="px-5 py-4 text-right font-bold">'+money(e.amount)+'</td><td class="px-5 py-4 text-right"><button onclick="openExpenseModal(\''+e.id+'\')" class="text-blue-600 mr-3"><i class="fa-solid fa-pen"></i></button><button onclick="deleteExpense(\''+e.id+'\')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>').join("");}
 
 
-function saveExpense(){
+async function saveExpense(){
     if(!currentUser){alert('Please sign in.');return;}
     const id=document.getElementById('expenseId').value;
     const category=document.getElementById('expenseCategory').value;
